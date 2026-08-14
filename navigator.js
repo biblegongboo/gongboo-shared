@@ -75,7 +75,22 @@
       });
     }
 
-    button.onclick = function () { render(); shade.hidden = false; };
+    function positionPanel() {
+      if (window.innerWidth > 600) {
+        shade.style.removeProperty('--gongboo-nav-top');
+        shade.style.removeProperty('--gongboo-nav-left');
+        shade.style.removeProperty('--gongboo-nav-width');
+        return;
+      }
+      var rect = button.getBoundingClientRect();
+      var width = Math.min(300, window.innerWidth - 24);
+      var left = Math.max(12, Math.min(window.innerWidth - width - 12, rect.left));
+      shade.style.setProperty('--gongboo-nav-top', Math.round(rect.bottom + 6) + 'px');
+      shade.style.setProperty('--gongboo-nav-left', Math.round(left) + 'px');
+      shade.style.setProperty('--gongboo-nav-width', Math.round(width) + 'px');
+    }
+    button.onclick = function () { render(); positionPanel(); shade.hidden = false; };
+    window.addEventListener('resize', function () { if (!shade.hidden) positionPanel(); });
     shade.querySelector('[data-close]').onclick = function () { shade.hidden = true; };
     shade.querySelector('[data-back]').onclick = function () { shade.hidden = true; };
     shade.onclick = function (event) { if (event.target === shade) shade.hidden = true; };
