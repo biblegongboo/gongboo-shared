@@ -21,7 +21,9 @@
 
   function destination(url) {
     var params = new URLSearchParams(location.search);
-    return params.get('mobile') === 'quiz' ? url + '?mobile=quiz&app=android' : url;
+    var androidApp = params.get('app') === 'android' || params.get('mobile') === 'quiz';
+    if (!androidApp) return url;
+    return url === URLS.bible ? url + '?mobile=quiz&app=android' : url + '?app=android';
   }
 
   function mount() {
