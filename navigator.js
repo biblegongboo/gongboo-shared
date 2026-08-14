@@ -9,6 +9,35 @@
   function product(code){return{name:PRODUCTS[code],id:'LIC-'+code,url:URLS.license+'?study='+encodeURIComponent('product:'+code)}}
   var root={name:'Select Study',children:[{name:'Bible',children:[{name:'Old Testament',children:OT.map(book)},{name:'New Testament',children:NT.map(book)}]},{name:'License',children:[{name:'National',children:[product('mortgage')]},{name:'California',children:[product('realestate'),product('insurance'),product('notary')]}]}]};
   function read(){try{return JSON.parse(localStorage.getItem(KEY)||'null')}catch(_){return null}}
+  function retry(action){var count=0,timer=setInterval(function(){count++;if(action()||count>100)clearInterval(timer)},100)}
+  function revealRequestedStudy(){
+    var request=new URLSearchParams(location.search).get('study')||'';
+    if(request.indexOf('book:')===0){
+      var bookName=request.slice(5);
+      retry(function(){
+        var target=document.querySelector('#bibleBookPicker [data-book="'+bookName+'"]');
+        if(!target)return false;
+        target.click();
+        setTimeout(function(){
+          var chapters=document.getElementById('bibleChapterPicker');
+          if(chapters)chapters.scrollIntoView({behavior:'smooth',block:'center'});
+        },80);
+        return true;
+      });
+    }else if(request.indexOf('product:')===0){
+      var productCode=request.slice(8);
+      retry(function(){
+        var target=document.querySelector('[data-product="'+productCode+'"]');
+        if(!target)return false;
+        target.click();
+        setTimeout(function(){
+          var area=document.getElementById('licenseSetArea');
+          if(area)area.scrollIntoView({behavior:'smooth',block:'center'});
+        },80);
+        return true;
+      });
+    }
+  }
   function mount(){
     var logo=document.querySelector('.sat-logo'),legacy=document.querySelector('.sat-title');if(!logo||!legacy)return;
     var host=document.createElement('div');host.className='gongboo-nav-host';logo.insertBefore(host,legacy);legacy.classList.add('gongboo-nav-legacy');
@@ -19,6 +48,7 @@
     function render(){var node=stack[stack.length-1];path.textContent=stack.map(function(x){return x.name}).join(' › ');list.innerHTML='';node.children.forEach(function(child){var item=document.createElement('button');item.type='button';item.className='gongboo-nav-item';item.innerHTML='<span></span><span>'+(child.children?'›':'')+'</span>';item.firstChild.textContent=child.name;item.onclick=function(){if(child.children){stack.push(child);render();return}localStorage.setItem(KEY,JSON.stringify({id:child.id,name:child.name}));label();shade.hidden=true;location.href=child.url};list.appendChild(item)})}
     button.onclick=function(){stack=[root];render();shade.hidden=false};shade.querySelector('[data-close]').onclick=function(){shade.hidden=true};shade.querySelector('[data-back]').onclick=function(){if(stack.length>1){stack.pop();render()}else shade.hidden=true};shade.onclick=function(e){if(e.target===shade)shade.hidden=true};
     new MutationObserver(function(){if(button.parentNode!==host){host.textContent='';host.appendChild(button)}if(!button.querySelector('.gongboo-nav-label'))label()}).observe(host,{childList:true,subtree:true});
+    revealRequestedStudy();
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
 })();
