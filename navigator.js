@@ -18,22 +18,15 @@
         var target=document.querySelector('#bibleBookPicker [data-book="'+bookName+'"]');
         if(!target)return false;
         target.click();
-        setTimeout(function(){
-          var chapters=document.getElementById('bibleChapterPicker');
-          if(chapters)chapters.scrollIntoView({behavior:'smooth',block:'center'});
-        },80);
         return true;
       });
     }else if(request.indexOf('product:')===0){
       var productCode=request.slice(8);
       retry(function(){
+        if(document.documentElement.dataset.licenseCatalogReady!=='1')return false;
         var target=document.querySelector('[data-product="'+productCode+'"]');
         if(!target)return false;
         target.click();
-        setTimeout(function(){
-          var area=document.getElementById('licenseSetArea');
-          if(area)area.scrollIntoView({behavior:'smooth',block:'center'});
-        },80);
         return true;
       });
     }
