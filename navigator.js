@@ -19,6 +19,15 @@
     catch (_) { return null; }
   }
 
+  function currentSystem() {
+    var path = String(location.pathname || '').toLowerCase();
+    if (path.indexOf('/license/') >= 0) return { id: 'LICENSE', name: 'License' };
+    if (path.indexOf('/bible/') >= 0 || path.indexOf('/supabase/app') >= 0) {
+      return { id: 'BIBLE', name: 'Bible' };
+    }
+    return null;
+  }
+
   function destination(url) {
     var params = new URLSearchParams(location.search);
     var androidApp = params.get('app') === 'android' || params.get('mobile') === 'quiz';
@@ -43,8 +52,11 @@
 
     function label() {
       button.innerHTML = '<span class="gongboo-nav-label"></span><span>▾</span>';
-      button.firstChild.textContent = (read() || {}).name || 'Select Study';
+      var active = currentSystem() || read();
+      button.firstChild.textContent = (active || {}).name || 'Select Study';
     }
+    var initialSystem = currentSystem();
+    if (initialSystem) localStorage.setItem(KEY, JSON.stringify(initialSystem));
     label();
 
     var shade = document.createElement('div');
