@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Bible 2.5D Vector Map Prototype</title>
+  <link rel="stylesheet" href="./viewer.css">
+</head>
+<body>
+  <main class="map25d-shell">
+    <header class="map25d-header">
+      <div>
+        <span class="map25d-eyebrow">GongBoo Vector Learning Engine</span>
+        <h1>Bible 2.5D Vector Map Prototype</h1>
+        <p>Wheel or double-click to zoom. Drag to pan. Labels appear by importance and zoom level.</p>
+      </div>
+      <div class="map25d-controls" aria-label="Map controls">
+        <button type="button" id="map25dZoomOut" aria-label="Zoom out">−</button>
+        <button type="button" id="map25dZoomIn" aria-label="Zoom in">+</button>
+        <button type="button" id="map25dReset">Fit all</button>
+      </div>
+    </header>
+    <section class="map25d-stage">
+      <div id="map25dHost"></div>
+      <div class="map25d-overlay">
+        <span id="map25dStatus">Loading vector places…</span>
+        <div id="map25dDetail">Select a place to inspect it.</div>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="./viewer.js"></script>
+</body>
+</html>
